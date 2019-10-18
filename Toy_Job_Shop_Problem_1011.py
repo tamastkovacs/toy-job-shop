@@ -64,11 +64,21 @@ imported_data_df=imported_data_df.assign(Task_2_length = ((imported_data_df['Tas
 #df['diff_days'] = df['End_date'] - df['Start_date']
 #df['diff_days']=df['diff_days']/np.timedelta64(1,'D')
 
-
 #find max(Task 2 Completion date) and define Transition_Date_Start as max(Task 2 Completion date) +5
-imported_data_df=imported_data_df.assign(Max_Preparation_Task_2_dt = max(imported_data_df['Task 2 Completion date']))
+#imported_data_df=imported_data_df.assign(Max_Preparation_Task_2_dt = max(imported_data_df['Task 2 Completion date']))
 #imported_data_df=imported_data_df.assign(Transition_Date_Start =  imported_data_df['Max_Preparation_Task_2_dt'] + 5 )
-imported_data_df["Transition_Date_Start"] = imported_data_df["Max_Preparation_Task_2_dt"] + timedelta(days=5)
+#imported_data_df["Transition_Date_Start"] = imported_data_df["Max_Preparation_Task_2_dt"] + timedelta(days=5)
+
+#define the end date of task2 completion for org 1 to 5, which is the lattest of the task 2 completion data plus another 5 days
+org_1_5_task2complete_date = max(imported_data_df.loc[0:4,'Task 2 Completion date']) + timedelta(days=5)
+#define the latter of the org6 and 7 task 2 completion date
+org_6_7_task2complete_date = max(imported_data_df.loc[5:6,'Task 2 Completion date'])
+#define transition start date for org 1 to 5, they can only start after 6 and 7 are finished with their task 2
+org_1_5_transition_Date_Start = max(org_1_5_task2complete_date,org_6_7_task2complete_date)
+#insert transition start date into the dataframe
+imported_data_df["Transition_Date_Start"] = org_1_5_transition_Date_Start
+#modify the transition start date for org 6 and 7
+imported_data_df.loc[5:6,"Transition_Date_Start"] = imported_data_df.loc[5:6,'Task 2 Completion date']
 
 #compute waiting days between task2 end date and transition start date 
 wait_days = imported_data_df['Transition_Date_Start'] - imported_data_df['Task 2 Completion date']
