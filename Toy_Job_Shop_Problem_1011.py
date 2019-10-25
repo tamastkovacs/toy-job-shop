@@ -53,8 +53,10 @@ imported_data_df.dtypes
 #Task 4 length                      int64
 #dtype: object
 
+initial_date = '2019-10-01'
+
 #Create initialisation date 2019-10-01
-imported_data_df=imported_data_df.assign(Initialisation_Date = pd.to_datetime('2019-10-01'))
+imported_data_df=imported_data_df.assign(Initialisation_Date = pd.to_datetime(initial_date))
 
 #create Task_1_length column (int)
 imported_data_df=imported_data_df.assign(Task_1_length = ((imported_data_df['Task 1 completion date'] - imported_data_df['Initialisation_Date'])/np.timedelta64(1,'D')).astype(int))
@@ -349,9 +351,11 @@ def MinimalJobshopToy():
     #Task 3 length                      int64
     #Task 4 length                      int64
     #dtype: object
+    
+    initial_date = '2019-10-01'
 
     #Create initialisation date 2019-10-01
-    imported_data_df=imported_data_df.assign(Initialisation_Date = pd.to_datetime('2019-10-01'))
+    imported_data_df=imported_data_df.assign(Initialisation_Date = pd.to_datetime(initial_date))
 
     #create Task_1_length column (int)
     imported_data_df=imported_data_df.assign(Task_1_length = ((imported_data_df['Task 1 completion date'] - imported_data_df['Initialisation_Date'])/np.timedelta64(1,'D')).astype(int))
