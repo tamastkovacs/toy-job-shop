@@ -267,6 +267,41 @@ print('Optimal Schedule Length: %i' % solver.ObjectiveValue())
 print(output)
 
 
+# Create per organisation output lines in date format
+output_date = ''
+for organisation in all_organisations:
+    # Sort by starting time.
+    assigned_jobs[organisation].sort()
+    sol_line_tasks = 'Organisation ' + str(organisation) + ': '
+    sol_line = '           '
+
+    for assigned_task in assigned_jobs[organisation]:
+        name = 'job_%i_%i' % (assigned_task.job, assigned_task.index)
+        # Add spaces to output to align columns.
+        sol_line_tasks += '%-10s' % name
+        
+        start_date = '2019/10/01'
+        Initialisation_Date = datetime.datetime.strptime(start_date, '%Y/%m/%d')
+        
+        start = int(assigned_task.start)
+        duration = int(assigned_task.duration)
+        start_date = Initialisation_Date + timedelta(start)
+        start_duration_date = Initialisation_Date + timedelta(start) + timedelta(duration)
+        start_date_str = str(start_date)
+        start_duration_date_str = str(start_duration_date)
+        sol_tmp = '[%s,%s]' % (start_date_str, start_duration_date_str)
+        # Add spaces to output to align columns.
+        sol_line += '%-10s' % sol_tmp
+        
+    sol_line += '\n'
+    sol_line_tasks += '\n'
+    output_date += sol_line_tasks
+    output_date += sol_line
+
+# Finally print the solution found in datetime format.
+print('Optimal Schedule Length: %i' % solver.ObjectiveValue())
+print(output)
+
 # In[ ]:
 
 
