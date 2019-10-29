@@ -329,6 +329,7 @@ import datetime
 from pandas import ExcelWriter
 from pandas import ExcelFile
 import numpy as np
+import matplotlib.pyplot as plt
 
 def MinimalJobshopToy():
     #define the model
@@ -487,6 +488,82 @@ def MinimalJobshopToy():
     # Finally print the solution found.
     print('Optimal Schedule Length: %i' % solver.ObjectiveValue())
     print(output)
+
+     #Visualisation
+    
+    #Declaring variables which will store the solver data to be plotted later
+    StartTimes = []
+    Durations = []
+    EndTimes = []
+    OrganisationName = []
+    job = []
+    task = []
+    loopnumber = []
+    x=0
+    Org = 0
+    OrgNumber = []
+    
+    #loop over all organisationa and jobs/tasks to fill arrays with solver data
+    for organisation in all_organisations:
+            for assigned_task in assigned_jobs[organisation]:
+                start = assigned_task.start
+                duration = assigned_task.duration
+                StartTimes.append(start)
+                Durations.append(duration)
+                OrganisationName.append(organisation)
+                EndTimes.append(start+duration)
+                job.append(assigned_task.job)
+                task.append(assigned_task.index)
+                OrgNumber.append(Org)
+                loopnumber.append(x)
+                x=x+1
+            Org = Org + 1        
+    
+    #
+    Distinctjob = np.unique(job)
+    
+    #Colour is based on a scale of 0-1, so I use their job number to define their colour and give each job a seperate colour
+    No_jobs = max(job)
+    Colour = np.divide(job,No_jobs)
+
+    # Declaring a figure "gnt" 
+    fig, gnt = plt.subplots() 
+
+    # Setting Y-axis limits 
+    gnt.set_ylim(0, 10*max(OrgNumber)+15) 
+
+    # Setting X-axis limits 
+    gnt.set_xlim(min(StartTimes)-10, max(EndTimes)+35) 
+
+    # Setting labels for x-axis and y-axis 
+    gnt.set_xlabel('Date') 
+    gnt.set_ylabel('Organisation') 
+
+    #Finding distinct organisations and numbering so that I can plot their name on the Y-axis
+    DistinctOrgName = np.unique(OrganisationName)
+    DistinctOrgNumber = np.unique(OrgNumber)
+    YTicks = DistinctOrgNumber*10+5
+    # Setting ticks on y-axis 
+    gnt.set_yticks(YTicks)
+    # Labelling tickes of y-axis 
+    gnt.set_yticklabels(DistinctOrgName) 
+
+    # Setting graph attribute 
+    gnt.grid(True) 
+
+    #Looping over all tasks numbers to create their bar on the chart
+    import matplotlib.patches as mpatches
+    for y in loopnumber:
+            gnt.broken_barh([(StartTimes[y], Durations[y])], (10*OrgNumber[y], 9),facecolors =(Colour[y],0.1,1-Colour[y]))
+            y=y+1
+    
+    #Looping over all distinct jobs to label them with their colour in the legend
+    patchList = []
+    for j in Distinctjob:
+            data_key = mpatches.Patch(color=(j/No_jobs,0.1,1-j/No_jobs), label='Job ' + str(j))
+            patchList.append(data_key)
+    plt.legend(handles=patchList)
+
 
 
 # In[21]:
