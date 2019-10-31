@@ -82,6 +82,15 @@ imported_data_df["Transition_Date_Start"] = org_1_5_transition_Date_Start
 #modify the transition start date for org 6 and 7
 imported_data_df.loc[5:6,"Transition_Date_Start"] = imported_data_df.loc[5:6,'Task 2 Completion date']
 
+#define Org2 Transition phase start
+org_2_task3_startdate = imported_data_df.loc[1,"Transition_Date_Start"]
+#define Org_4 Transition phase start
+org_4_task3_startdate = imported_data_df.loc[3,"Transition_Date_Start"]
+#define Org_5 start date for Task 3
+org_5_startdate = min(org_2_task3_startdate,org_4_task3_startdate) + timedelta(days=7)
+#insert Org_5 start date into dataframe
+imported_data_df.loc[4,"Transition_Date_Start"] = org_5_startdate
+
 #compute waiting days between task2 end date and transition start date 
 wait_days = imported_data_df['Transition_Date_Start'] - imported_data_df['Task 2 Completion date']
 #convert the days into integer format
