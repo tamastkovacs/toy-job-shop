@@ -82,7 +82,7 @@ imported_data_df["Transition_Date_Start"] = org_1_5_transition_Date_Start
 #modify the transition start date for org 6 and 7
 imported_data_df.loc[5:6,"Transition_Date_Start"] = imported_data_df.loc[5:6,'Task 2 Completion date']
 
-#define Org2 Transition phase start
+#define Org2 Transition Phase Start
 org_2_task3_startdate = imported_data_df.loc[1,"Transition_Date_Start"]
 #define Org_4 Transition phase start
 org_4_task3_startdate = imported_data_df.loc[3,"Transition_Date_Start"]
