@@ -3,9 +3,6 @@
 
 # # Import Libraries
 
-# In[1]:
-
-
 import pandas as pd
 # Import Python wrapper for or-tools CP-SAT solver.
 from ortools.sat.python import cp_model
@@ -16,32 +13,16 @@ from pandas import ExcelWriter
 from pandas import ExcelFile
 import numpy as np
 
-
 # # Define the model
-
-# In[2]:
-
-
 def MinimalJobshopSat():
     """Minimal jobshop problem."""
     # Create the model.
     model = cp_model.CpModel()
 
-
-# In[3]:
-
-
 model = cp_model.CpModel()
 
-
 # # Import Data
-
-# In[5]:
-
-
 imported_data_df = pd.read_excel('Toy Job Shop problem.xlsx', sheet_name='Data')
-
-#print (imported_data_df)
 
 #check column format
 imported_data_df.dtypes
@@ -156,10 +137,6 @@ task_type = collections.namedtuple('task_type', 'start end interval')
 assigned_task_type = collections.namedtuple('assigned_task_type',
                                             'start job index duration')
 
-
-# In[9]:
-
-
 # Create job intervals and add to the corresponding machine lists.
 all_tasks = {}
 org_to_intervals = collections.defaultdict(list)
@@ -180,12 +157,6 @@ for job_id, job in enumerate(jobs_data):
                 start=start_var, end=end_var, interval=interval_var)
             org_to_intervals[organisation].append(interval_var)
 
-
-# # Define the constraints
-
-# In[10]:
-
-
 # Create and add disjunctive constraints.
 for organisation in all_organisations:
     model.AddNoOverlap(org_to_intervals[organisation])
@@ -196,12 +167,6 @@ for organisation in all_organisations:
 #        model.Add(all_tasks[job_id, task_id +
 #                            1].start >= all_tasks[job_id, task_id].end)
 
-
-# # Define the objective
-
-# In[11]:
-
-
 # Makespan objective.
 obj_var = model.NewIntVar(0, int(horizon), 'makespan')
 model.AddMaxEquality(obj_var, [
@@ -210,22 +175,12 @@ model.AddMaxEquality(obj_var, [
 ])
 model.Minimize(obj_var)
 
-
 # # Declare the solver
-
-# In[12]:
-
-
 # Solve model.
 solver = cp_model.CpSolver()
 status = solver.Solve(model)
 
-
 # # Display the results
-
-# In[13]:
-
-
 # Create one list of assigned tasks per machine.
 assigned_jobs = collections.defaultdict(list)
 for job_id, job in enumerate(jobs_data):
@@ -266,7 +221,6 @@ for organisation in all_organisations:
 print('Optimal Schedule Length: %i' % solver.ObjectiveValue())
 print(output)
 
-
 # Create per organisation output lines in date format
 output_date = ''
 for organisation in all_organisations:
@@ -302,17 +256,6 @@ for organisation in all_organisations:
 print('Optimal Schedule Length: %i' % solver.ObjectiveValue())
 print(output)
 
-# In[ ]:
-
-
-
-
-
-# # Visualize the results
-
-# In[17]:
-
-
 import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 # Declaring a figure "gnt" 
@@ -347,13 +290,7 @@ facecolors ='tab:blue')
 gnt.broken_barh([(10, 50), (100, 20), (130, 10)], (20, 9),
 facecolors =('tab:red')) 
 
-#plt.savefig("gantt1.png") 
-
-
 # # Complete Code (Modularization)
-
-# In[20]:
-
 
 import pandas as pd
 # Import Python wrapper for or-tools CP-SAT solver.
@@ -599,16 +536,7 @@ def MinimalJobshopToy():
             patchList.append(data_key)
     plt.legend(handles=patchList)
 
-
-
-# In[21]:
-
-
 MinimalJobshopToy()
-
-
-# In[22]:
-
 
 ## TODO: 
 
@@ -616,4 +544,3 @@ MinimalJobshopToy()
 # Get the visualisation working. (Build out two visulations one for high level and one for lower level tasks).
 # General tidy up of the code (make more generalisable as we go forward)
 # Organisation numbers not lined up exactly?
-
